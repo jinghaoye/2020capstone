@@ -4,7 +4,7 @@ tree(if_then_else('Do you have fever ',
                   /* level 2*/
                                if_then_else('In contact with a large crowd recently',
                                /* level 3*/
-                                            if_then_else('has headache, joint pain, discomfort',
+                                            if_then_else('have difficulty breathing',
                                             /* level 4*/
                                                             virus(test1),
                                                             virus("fail to detect")),
