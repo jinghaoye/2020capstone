@@ -8,7 +8,7 @@ tree(if_then_else('has fever',
                                                         false))),
                   if_then_else('has nasal congestion, snot, sneeze',
                                if_then_else('has headache, joint pain, discomfort',
-                                            false,
+                                            virus("fail to detect the virus"),
                                             virus(cold)),
                                false))).
                                
@@ -16,14 +16,14 @@ is_true(Q) :-
         format("~w?\n", [Q]),
         read(yes).
 
-virus(A) :-
+virus(Virus) :-
         tree(T),
-        tree_animal(T, A).
+        tree_virus(T, Virus).
 
-tree_animal(virus(A), A).
+tree_virus(virus(Virus), Virus).
 
-tree_animal(if_then_else(Cond,Then,Else), A) :-
+tree_virus(if_then_else(Cond,Then,Else), Virus) :-
         (   is_true(Cond) ->
-            tree_animal(Then, A)
-        ;   tree_animal(Else, A)
+            tree_virus(Then, Virus)
+        ;   tree_virus(Else, Virus)
         ).
