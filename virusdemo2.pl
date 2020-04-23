@@ -19,7 +19,17 @@ tree(if_then_else('Do you have fever ',
 
                                                         virus("fail to detect")),
                                             
-                                            virus("fail to detect")),
+                                            if_then_else('have you been to hospital recently',
+                                            /* level 4*/
+                                                        if_then_else('have difficulty breathing',
+                                                                    if_then_else('have difficulty breathing',
+                                                                                virus(cold),
+                                                                                virus("fail to detect the virus")),
+                                                                    virus("fail to detect the virus")),
+
+                                                        if_then_else('has headache, joint pain, discomfort',
+                                                                    virus(cold),
+                                                                    virus("fail to detect the virus")))),
 
                                if_then_else('The temperature rises to 39 degrees in short of period',
                                /* level 3*/
@@ -32,7 +42,14 @@ tree(if_then_else('Do you have fever ',
                                                                                 virus(ebola),
                                                                                 virus("fail to detect the virus")),
 
-                                                                    virus("fail to detect the virus")),
+                                                                    if_then_else('feel muscle and joint pain, extreme fatigue and loss of appetite',
+                                                                    /* level 6*/
+                                                                                if_then_else('Lymph nodes may have mild enlargment with mild tenderness',
+                                                                                /* level 7*/
+                                                                                            virus(dengue),
+                                                                                            virus("fail to detect the virus")),
+
+                                                                                virus("fail to detect the virus"))),
 
                                                         if_then_else('feel muscle and joint pain, extreme fatigue and loss of appetite',
                                                         /* level 5*/
@@ -44,17 +61,29 @@ tree(if_then_else('Do you have fever ',
                                                                                                         virus(cold),
                                                                                                         virus("fail to detect the virus"))),
 
-                                                                                virus("fail to detect the virus"))),
+                                                                                if_then_else('has headache, joint pain, discomfort',
+                                                                                            virus(test1),
+                                                                                            virus("fail to detect the virus")))),
 
-                                            if_then_else('Any vomiting, diarrhea, and rash',
+                                            if_then_else('feel muscle and joint pain, extreme fatigue and loss of appetite',
                                             /* level 4*/
-                                                        virus(ebola),
-                                                          false))),
+                                                        if_then_else('has headache, joint pain, discomfort',
+                                                        /* level 5*/
+                                                                    if_then_else('got sore throat with persistent cough',
+                                                                    /* level 6*/
+                                                                                virus(flu),
+                                                                                if_then_else('systemic symptom got imroved recently',
+                                                                                            /* level 7*/
+                                                                                                        virus(cold),
+                                                                                                        virus("fail to detect the virus"))),
+                                                                    virus("fail to detect the virus")),
+
+                                                        false))),
 
                   if_then_else('has nasal congestion, snot, sneeze',
                   /* level 2*/
                                if_then_else('has headache, joint pain, discomfort',
-                                            virus(test1),
+                                            virus(cold),
                                             virus("fail to detect the virus")),
                                false))).
                                
