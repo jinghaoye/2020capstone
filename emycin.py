@@ -1,17 +1,5 @@
 # -----------------------------------------------------------------------------
-## Table of contents
-
-# 1. [Certainty factors](#certainty)
-# 2. [Contexts](#contexts)
-# 3. [Parameters](#parameters)
-# 4. [Conditions](#conditions)
-# 5. [Values](#values)
-# 6. [Rules](#rules)
-# 7. [The Shell](#shell)
-
-
-# -----------------------------------------------------------------------------
-# 1. [Certainty factors](#certainty)
+## [Certainty factors](#certainty)
 
 def cf_or(a, b):
     """The OR of two certainty factors."""
@@ -215,35 +203,7 @@ class Rule(object):
         """Return the conclusion conditions of this rule."""
         return [self._bind_cond(concl, instances) for concl in self.raw_conclusions]
 
-    ### Applying rules
-    
-    # Rule application has two stages: determining whether the rule is
-    # applicable by attempting to satisfy its premises, and using the rule to
-    # deduce new values.
-    
-    # <a id="applicable"></a>
     def applicable(self, values, instances, find_out=None):
-        """
-        **applicable** determines the applicability of this rule (represented by
-        a certainty factor) by evaluating the truth of each of its premise
-        conditions against known values of parameters.
-        
-        This function is key to the backwards-chaining reasoning algorithm:
-        after a candidate rule is identified by the reasoner (see
-        [Shell.find_out](#find_out)), it tries to satisfy all the premises of
-        the rule.  This is similar to Prolog, where a rule can only be applied
-        if all its body goals can be achieved.
-        
-        Arguments:
-        
-        - values: a dict that maps a (param, inst) pair to a list of known
-          values [(val1, cf1), (val2, cf2), ...] associated with that pair.
-          param is the name of a Parameter object and inst is the name of a
-          Context.
-        - instances: a dict that maps a Context name to its current instance.
-        - find_out: see eval_condition
-        
-        """
         # Try to reject the rule early if possible by checking each premise
         # without reasoning.
         for premise in self.premises(instances):
@@ -268,7 +228,6 @@ class Rule(object):
         return total_cf
 
     
-    # <a id="apply"></a>
     def apply(self, values, instances, find_out=None, track=None):
         """
         **apply** tries to use this rule by first determining if it is
@@ -303,23 +262,10 @@ class Rule(object):
 
 def use_rules(values, instances, rules, find_out=None, track_rules=None):
     """Apply rules to derive new facts; returns True if any rule succeeded."""
-    
-    # Note that we can't simply iterate over the rules and try applying them
-    # until one succeeds in finding new values--we have to apply them all,
-    # because any of them could decrease the certainty of a condition, and stopping
-    # early could lead to fault conclusions.  This differs from Prolog, where
-    # only new truths are deduced.
-    
     return any([rule.apply(values, instances, find_out, track_rules) for rule in rules])
 
 
-# -----------------------------------------------------------------------------
-# <a id="shell"></a>
 ## Shell
-
-# The Shell keeps the state of the system, tracking all of the defined contexts,
-# parameters, and rules, current instances of contexts and the known values of
-# their parameters, and data for user introspection.
 
 def write(line): print(line)
 
@@ -385,11 +331,6 @@ class Shell(object):
         return self.params.setdefault(name, Parameter(name))
     
     ### User input and introspection
-
-    # Emycin interacts with users to gather information and print results.
-    # While using the shell, the user will be asked questions to support reasoning,
-    # and they have the option of asking the system what it is doing and why.  We
-    # offer some support for user interaction:
     
     HELP = """Type one of the following:
 ?       - to see possible answers for this parameter
@@ -482,7 +423,6 @@ unknown - if the answer to this question is not known
     # for that parameter by finding all rules that can deduce that parameter
     # and trying to apply them.
     
-    # <a id="find_out"></a>
     def find_out(self, param, inst=None):
         """
         Use rules and user input to determine possible values for (param, inst).
@@ -523,7 +463,6 @@ unknown - if the answer to this question is not known
     # by specifying a list of contexts with initial_data and goal lists to the
     # `execute` function.
     
-    # <a id="execute"></a>
     def execute(self, context_names):
         """
         Gather the goal data for each named context and report the findings.
@@ -549,7 +488,7 @@ unknown - if the answer to this question is not known
                 self.find_out(param)
             
             # Try to collect all of the goal data.
-            self._set_current_rule('goal')
+            self._set_current_rule('initial')
             for param in ctx.goals:
                 self.find_out(param)
             
